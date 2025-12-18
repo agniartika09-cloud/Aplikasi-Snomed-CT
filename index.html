@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi SNOMED CT - Capstone Rekam Medis</title>
+    <style>
+        /* CSS untuk styling aplikasi (kembali ke warna awal) */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #333;
+            overflow: hidden;
+        }
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section {
+            background-color: white;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: block;
+        }
+        h2 {
+            color: #007bff;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, button {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+        .resume-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+        .download-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .download-btn:hover {
+            background-color: #218838;
+        }
+        .input-code-btn {
+            background-color: #ffc107;
+            color: black;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .input-code-btn:hover {
+            background-color: #e0a800;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Aplikasi SNOMED CT untuk Rekam Medis</h1>
+        <p>Tugas Capstone Mahasiswa D3 Rekam Medis</p>
+    </header>
+    <nav>
+        <a href="#input-resume" class="nav-link" data-section="input-resume">Input Resume Medis</a>
+        <a href="#cari-snomed" class="nav-link" data-section="cari-snomed">Pencarian SNOMED CT</a>
+        <a href="#input-snomed" class="nav-link" data-section="input-snomed">Input Kode</a>
+    </nav>
+    <div class="container">
+        <section id="input-resume" class="section">
+            <h2>Input Resume Medis</h2>
+            <form id="form-resume">
+                <label for="nama-pasien">Nama Pasien:</label>
+                <input type="text" id="nama-pasien" name="nama-pasien" placeholder="Masukkan nama pasien" required>
+
+                <label for="tanggal-lahir">Tanggal Lahir:</label>
+                <input type="date" id="tanggal-lahir" name="tanggal-lahir" required>
+
+                <label for="diagnosa">Diagnosa:</label>
+                <textarea id="diagnosa" name="diagnosa" rows="4" placeholder="Masukkan diagnosa atau resume medis" required></textarea>
+
+                <label for="upload-file">Upload Dokumen (PDF/Teks):</label>
+                <input type="file" id="upload-file" name="upload-file" accept=".pdf,.txt" required>
+
+                <button type="submit">Simpan Resume</button>
+            </form>
+            <div class="result" id="result-resume">
+                <!-- Placeholder untuk hasil -->
+            </div>
+        </section>
+
+    
+
+        <section id="cari-snomed" class="section">
+            <h2>Pencarian Pengkodean SNOMED CT</h2>
+            <p>Masukkan istilah medis untuk mencari kode SNOMED CT. </p>
+            <form id="form-snomed">
+                <label for="istilah-medis">Istilah Medis:</label>
+                <input type="text" id="istilah-medis" name="istilah-medis" placeholder="Masukkan istilah medis (e.g., 'diabetes mellitus')" required>
+
+                <button type="submit">Cari Kode SNOMED CT</button>
+            </form>
+            <div class="result" id="result-snomed">
+                <!-- Placeholder untuk hasil pencarian SNOMED CT -->
+            </div>
+        </section>
+
+        <section id="input-snomed" class="section">
+            <h2>Input Kode Baru </h2>
+            <p>Tambahkan kode SNOMED CT baru ke sistem.</p>
+            <form id="form-add-snomed">
+                <label for="new-term">Istilah Medis:</label>
+                <input type="text" id="new-term" name="new-term" placeholder="Masukkan istilah medis" required>
+
+                <label for="new-code">Kode SNOMED CT:</label>
+                <input type="text" id="new-code" name="new-code" placeholder="Masukkan kode SNOMED CT" required>
+
+                <button type="submit">Tambah Kode</button>
+            </form>
+            <div class="result" id="result-add-snomed">
+                <!-- Placeholder untuk hasil -->
+            </div>
+            <button onclick="showSection('cari-snomed')">Kembali ke Pencarian</button>
+        </section>
+    </div>
+    <footer>
+        <p>&copy; 2023 - Aplikasi Capstone Rekam Medis. Dibuat untuk tujuan edukasi. Integrasi dengan API SNOMED CT dari IHTSDO.</p>
+    </footer>
+
+    <!-- JavaScript untuk menangani database, fungsi, dan navigasi -->
+    <script>
+        // Data dummy SNOMED CT diperluas sebagai fallback utama
+        const snomedData = [
+            { term: 'Kontrol CA Sinonasal ADS', code: '281036007', description: 'Follow-up consultation (procedure)' },
+            { term: 'Hidung kiri tersumbat', code: '68235000', description: 'Nasal congestion (finding)' },
+            { term: 'Hidung keluar lendir', code: '75803007', description: 'Posterior rhinorrhea (disorder)' },
+            { term: 'Kelemahan sisi kanan tubuh', code: '278286009', description: 'Right hemiparesis (disorder)' },
+            { term: 'Membaik', code: '268910001', description: "Patient's condition improved (finding)" },
+            { term: 'Tensi 120/80 mmHg', code: '75367002', description: 'Blood pressure (observable entity)' },
+            { term: 'Nadi 80 x/menit', code: '78564009', description: 'Heart rate measured at systemic artery (observable entity)' },
+            { term: 'Suhu 36.00 C', code: '703421000', description: 'Temperature (observable entity)' }, 
+            { term: 'BB 60.0 Kg', code: '27113001', description: 'Body weight (observable entity)' },
+            { term: 'TB 165 cm', code: '1153637007', description: 'Body height (observable entity)' },
+            { term: 'RR 21 x/menit', code: '86290005', description: 'Respiratory rate (observable entity)' },
+            { term: 'Medikamentosa', code: '18629005', description: 'Administration of drug or medication (procedure)' },
+            { term: 'Prio Radiotherapy', code: '1287742003', description: 'Radiotherapy (procedure)' },
+            { term: 'Radiotherapy session', code: '122255006', description: 'Radiotherapy treatment phase (regime/therapy)' },
+            { term: 'Malignant neoplasm, accessory sinus, unspecified', code: '39659005', description: 'Primary malignant neoplasm of accessory sinus (disorder)' },
+            { term: 'NACL Satoria Infus 0,9% 500 mL', code: '782104005', description: 'Product containing sodium chloride 9 mg/mL solution for injection (clinical drug)' },
+            { term: 'SPET 20 CC', code: '61968008', description: 'Syringe, device (physical object)' },
+            { term: 'Mecobalamin kapsul 0,5 mg', code: '776745000', description: 'Product containing only mecobalamin (medicinal product)' },
+            { term: 'Curcuma tablet 20 mg', code: '349365008', description: 'Herbal medicine (product)' },
+            { term: 'Perempuan', code: '22456002', description: 'Woman (person)' },
+            { term: '55 tahun', code: '282895005', description: 'Middle-age (finding)' },
+            { term: 'Badan Pegal', code: '82991004', description: 'Generalized aches and pains (finding)' },
+            { term: 'Keseumutan', code: '95668009', description: 'Paresthesia (finding)' },
+            { term: 'Anemia', code: '275538002', description: 'History of anemia (situation)' },
+            { term: 'Perut', code: '81893003', description: 'Structure of abdominopelvic cavity and/or content of abdominopelvic cavity and/or anterior abdominal wall (body structure)' },
+            { term: 'Lemas', code: '13791008', description: 'Asthenia (finding)' },
+            { term: 'Pusing', code: '404640003', description: 'Dizziness (finding)' },
+            { term: 'Transfusi', code: '82299001', description: 'Transfusion of blood product (procedure)' },
+            { term: 'C56 – Ovarian cancer', code: '363448002', description: 'Malignant neoplasm of ovary (disorder)' },
+            { term: 'Malignant neoplasm of ovary', code: '363448002', description: 'Malignant neoplasm of ovary (disorder)' },
+            { term: 'Clear cell adenocarcinoma ovary', code: '763113005', description: 'Clear cell adenocarcinoma of ovary (disorder)' },
+            { term: '3-way stopcock', code: '466140006', description: 'Stopcock (physical object)' },
+            { term: 'IV Catheter No.20', code: '284940006', description: 'Peripheral intravenous catheter, device (physical object)' },
+            { term: 'Meloxicam tablet 15 mg', code: '329928008', description: 'Product containing precisely meloxicam 15 milligram/1 each conventional release oral tablet (clinical drug)' },
+            { term: 'Spet 5 CC', code: '61968008', description: 'Syringe, device (physical object)' },
+            { term: 'Transfusion set', code: '466452000', description: 'Blood transfusion filter (physical object)' },
+            { term: 'Albutofer tablet 500 mg', code: '22544007', description: 'Albumin (substance)' },
+            { term: 'IV Catheter No.22', code: '284940006', description: 'Peripheral intravenous catheter, device (physical object)' },
+            { term: 'NaCl Satoria infus 0,9% 500 mL', code: '782104005', description: 'Product containing precisely sodium chloride 9 milligram/1 milliliter conventional release solution for injection (clinical drug)' },
+            { term: 'Spet 5 CC', code: '61968008', description: 'Syringe, device (physical object)' },
+            { term: 'Curcuma tablet 20 mg', code: '349365008', description: 'Herbal medicine (product)' },
+            { term: 'Mecobalamin kapsul 0,5 mg', code: '776745000', description: 'Product containing only mecobalamin (medicinal product)' },
+            { term: 'Omeprazole Kapsul 20 mg', code: '317291008', description: 'Product containing precisely omeprazole 20 milligram/1 each conventional release oral capsule (clinical drug)' },
+            { term: 'Tas purinya kecil UK 34CM X 25CM X 5CM', code: '116205004', description: 'Blood bag, device (physical object)' },
+            { term: 'Nyeri dada ringan', code: '29857009', description: 'Chest pain (finding)' },
+            { term: 'Dada', code: '51185008', description: 'Chest structure (body structure)' },
+            { term: 'Tenang', code: '271594007', description: 'Feeling calm (finding)' },
+            { term: 'Tensi 130/81 mmHg', code: '75367002', description: 'Blood pressure (observable entity)' },
+            { term: 'Nadi 80 x/menit', code: '78564009', description: 'Heart rate measured at systemic artery (observable entity)' },
+            { term: 'Suhu 36.20 C', code: '703421000', description: 'Temperature (observable entity)' },
+            { term: 'BB 52.0 Kg', code: '27113001', description: 'Body weight (observable entity)' },
+            { term: 'TB 160 cm', code: '1153637007', description: 'Body height (observable entity)' },
+            { term: 'RR 20 x/menit', code: '86290005', description: 'Respiratory rate (observable entity)' },
+            { term: 'Follow-up examination after treatment for other conditions', code: '113090005', description: 'History and physical examination, follow-up (procedure)' },
+            { term: 'Ischemic heart disease', code: '414545008', description: 'Ischemic heart disease (disorder)' },
+            { term: 'Angina pectoris', code: '194828000', description: 'Angina (disorder)' },
+            { term: 'Aspirin', code: '387458008', description: 'Aspirin (substance)' },
+            { term: 'Clopidogrel tablet 75 mg', code: '386952008', description: 'Clopidogrel (substance)' },
+            { term: 'Bisoprolol tablet 5 mg', code: '36858003', description: 'Bisoprolol (substance)' },
+            { term: 'Atorvastatin tablet 20 mg', code: '373444002', description: 'Atorvastatin (substance)' },
+            { term: 'Isosorbide dinitrate', code: '37832007', description: 'Isosorbide dinitrate (substance)' },
+            { term: 'Amlodipine tablet 10 mg', code: '783048008', description: 'Product containing precisely amlodipine (as amlodipine besilate) 10 milligram/1 each conventional release oral tablet (clinical drug)' },
+            { term: 'Metformin tablet', code: '372567009', description: 'Metformin (substance)' },
+            { term: 'Omeprazole capsule', code: '387137007', description: 'Omeprazole (substance)' },
+            { term: 'Membaik', code: '268910001', description: "Patient's condition improved (finding)" },
+            { term: 'Tensi 127/75 mmHg', code: '75367002', description: 'Blood pressure (observable entity)' },
+            { term: 'Nadi 107 x/menit', code: '78564009', description: 'Heart rate measured at systemic artery (observable entity)' },
+            { term: 'Suhu 36.60 C', code: '703421000', description: 'Temperature (observable entity)' },
+            { term: 'BB 52.0 Kg', code: '27113001', description: 'Body weight (observable entity)' },
+            { term: 'TB 155 cm', code: '1153637007', description: 'Body height (observable entity)' },
+            { term: 'RR 20 x/menit', code: '86290005', description: 'Respiratory rate (observable entity)' },
+            { term: 'Follow-up examination after treatment for other conditions', code: '113090005', description: 'History and physical examination, follow-up (procedure)' },
+            { term: 'Complicated cataract', code: '193600001', description: 'Cataract due to ocular disease (disorder)' },
+            { term: 'Iridocyclitis, unspecified', code: '77971008', description: 'Iridocyclitis (disorder)' },
+            { term: 'Cendo tropin 1%', code: '330548006', description: 'Product containing precisely atropine sulfate 10 milligram/1 milliliter conventional release eye drops (clinical drug)' },
+            { term: 'Levofloxacin hemihydrate eye drop 5 mg/mL', code: '725662008', description: 'Levofloxacin hemihydrate (substance)' },
+            { term: 'Oculfem tetes mata', code: '2925007', description: 'Fluorometholone (substance)' },
+            { term: 'Megacolon congenital post', code: '24291004',description: 'Congenital dilatation of colon (disorder)' },
+            { term: 'Nadi: 130 / menit', code: '78564009',description: 'Heart rate measured at systemic artery (observable entity)' },
+            { term: 'Suhu: 36.5 C',code: '703421000', description: 'Temperature (observable entity)' },
+            { term: 'BB: 3.6 Kg', code: '27113001', description: 'Body weight (observable entity)' },
+            { term: 'TB: 52 Cm', code: '1153637007', description: 'Body height (observable entity)' },
+            { term: 'RR: 26 / menit', code: '86290005', description: 'Respiratory rate (observable entity)' },
+            { term: 'Operasi trans anal full touth', code: '271410001', description: 'Anorectal stretch (procedure)' },
+            { term: 'Follow-up examination after other treatment for other conditions', code: '113009005', description: 'History and physical examination, follow-up (procedure)' },
+            { term: 'Hirschsprung’s disease', code: '204739008', description: 'Congenital aganglionic megacolon (disorder)' },
+            { term: 'Zinc Oxide', code: '42841002', description: 'Zinc oxide (substance)'},
+            { term: 'Vaselin putih', code: '5774007', description: 'White petrolatum (substance)'},
+            { term: 'Laki-laki', code: '339947000', description: 'Man (Person)' },
+            { term: '62 tahun', code: '105407002', description: 'Elderly man (Person)' },
+            { term: 'Kurang nafsu makan', code: '79990006', description: 'Loss of appetite (finding)' },
+            { term: 'Demam naik turun', code: '77957000', description: 'Intermittent fever (finding)' },
+            { term: 'Lemas', code: '13791008', description: 'Asthenia (finding)' },
+            { term: 'Memar/bengkak', code: '2696001', description: "Patient's condition improved (finding)" },
+            { term: 'Lab darah lengkap', code: '266407004', description: 'Complete blood count (procedure)' },
+            { term: 'Kimia klinik', code: '35248006', description: 'Chemical method (procedure)' },
+            { term: 'Terapi obat', code: '416608005', description: 'Drug therapy (procedure)' },
+            { term: 'Transfusi PRC', code: '71498003', description: 'Transfusion of packed red blood cells (procedure)' },
+            { term: 'Anemia aplastik', code: '106959006', description: 'Aplastic anemia (disorder)' },
+            { term: '3-way stopcock', code: '466140004', description: 'Stopcock (physical object)' },
+            { term: 'Acetylcysteine kapsul 200 mg', code: '387440002', description: 'Acetylcysteine (substance)' },
+            { term: 'Ampicillin + sulbactam inj 1,5 g', code: '370418003', description: 'Product containing precisely ampicillin + sulbactam powder for injection (clinical drug)' },
+            { term: 'Aqua 25 mL pro injeksi', code: '784654002', description: 'Water 1 g/mL solution for injection (clinical drug)' },
+            { term: 'Diphenhydramine inj 10 mg/mL', code: '372680005', description: 'Diphenhydramine (clinical drug)' },
+            { term: 'Farsik inj 10 mg/mL', code: '78193001', description: 'Furosemide 10 mg/mL injection (clinical drug)' },
+            { term: 'Furosemid tablet 40 mg', code: '31779002', description: 'Furosemide 40 mg tablet (clinical drug)' },
+            { term: 'IV Catheter No.20', code: '84149004', description: 'Peripheral intravenous catheter, device' },
+            { term: 'IV Catheter No.22', code: '82449006', description: 'Peripheral intravenous catheter, device' },
+            { term: 'Omeprazole inj 40 mg', code: '766146009', description: 'Omeprazole 40 mg/vial injection (clinical drug)' },
+            { term: 'Omeprazole kapsul 20 mg', code: '372729009', description: 'Omeprazole 20 mg capsule (clinical drug)' },
+            { term: 'OTSUi NACL infus 0,9%', code: '395083000', description: 'Sodium chloride 0.9% solution for injection (clinical drug)' },
+            { term: 'Paracetamol infus 10 mg/mL', code: '132715000', description: 'Paracetamol 10 mg/mL solution for infusion (clinical drug)' },
+            { term: 'Paracetamol tablet 500 mg', code: '322326009', description: 'Paracetamol 500 mg tablet (clinical drug)' },
+            { term: 'Pygepack® NS 100 mL', code: '433583007', description: 'Infusion of drug or medicament (procedure)' },
+            { term: 'Sefiksim kapsul 100 mg', code: '387550009', description: 'Cefixime (clinical drug)' },
+            { term: 'Sefotaksim inj 1 g', code: '321985003', description: 'Cefotaxime 1 g injection (clinical drug)' },
+            { term: 'Setritin tab 10 mg', code: '29318006', description: 'Cetirizine 10 mg tablet (clinical drug)' },
+            { term: 'Spet 10 cc', code: '619805003', description: 'Syringe, device' },
+            { term: 'Spet 3 cc', code: '619805003', description: 'Syringe, device' },
+            { term: 'Spironolacton tablet 25 mg', code: '318065006', description: 'Spironolactone 25 mg tablet (clinical drug)' },
+            { term: 'Spu Pan leadl size 34 cm no 35', code: '441768000', description: 'Blood bag, device' },
+            { term: 'Transfusion set', code: '466245002', description: 'Blood transfusion filter (device)' },
+            { term: 'Laki-laki', code: '339947000', description: 'Man (Person)' },
+            { term: '62 tahun', code: '105437002', description: 'Elderly man (Person)' },
+            { term: 'Kurang nafsu makan', code: '79890006', description: 'Loss of appetite (finding)' },
+            { term: 'Demam naik turun', code: '77957000', description: 'Intermittent fever (finding)' },
+            { term: 'Lemas', code: '13791003', description: 'Asthenia (finding)' },
+            { term: 'Membak', code: '268910001', description: "Patient's condition improved (finding)" },
+            { term: 'Lab darah lengkap', code: '266407004', description: 'Complete blood count (procedure)' },
+            { term: 'Kimia klinik', code: '35248006', description: 'Chemical method (procedure)' },
+            { term: 'Terapi obat', code: '416608005', description: 'Drug therapy (procedure)' },
+            { term: 'Transfusi PRC', code: '71498003', description: 'Transfusion of packed red blood cells (procedure)' },
+            { term: 'Anemia aplastik', code: '106950006', description: 'Aplastic anemia (disorder)' },
+            { term: '3-way stopcock', code: '466146004', description: 'Stopcock (physical object)' },
+            { term: 'Acetylcysteine kapsul 200 mg', code: '387440002', description: 'Acetylcysteine (substance)' },
+            { term: 'Ampicillin + sulbactam inj 1,5 g', code: '370418003', description: 'Product containing precisely ampicillin + sulbactam powder for injection (clinical drug)' },
+            { term: 'Aqua 25 mL pro injeksi', code: '784654002', description: 'Water solution for injection (clinical drug)' },
+            { term: 'Diphenhydramin inj 10 mg/mL', code: '372680005', description: 'Diphenhydramine (clinical drug)' },
+            { term: 'Farsik inj 10 mg/mL', code: '781903001', description: 'Furosemide 10 mg/mL injection (clinical drug)'  },
+            { term: 'Furosemid tablet 40 mg', code: '317972000', description: 'Furosemide 40 mg oral tablet (clinical drug)' },
+            { term: 'IV Catheter No.20', code: '82449006', description: 'Peripheral intravenous catheter (device)' },
+            { term: 'IV Catheter No.22', code: '82449006', description: 'Peripheral intravenous catheter (device)' },
+            { term: 'Omeprazole inj 40 mg', code: '766146009', description: 'Omeprazole 40 mg injection (clinical drug)' },
+            { term: 'Omeprazole kapsul 20 mg', code: '372729009', description: 'Omeprazole 20 mg capsule (clinical drug)' },
+            { term: 'OTSUI NACL infus 0,9%', code: '782104005', description: 'Sodium chloride 0.9% solution for injection (clinical drug)' },
+            { term: 'Paracetamol infus 10 mg/mL', code: '123715007', description: 'Paracetamol 10 mg/mL solution for infusion (clinical drug)' },
+            { term: 'Paracetamol tablet 500 mg', code: '322326009',  description: 'Paracetamol 500 mg tablet (clinical drug)' },
+            { term: 'Pygepack NS 100 mL', code: '433853007', description: 'Infusion of drug or medicament via intravenous drip (procedure)' },
+            { term: 'Sefiksim kapsul 100 mg', code: '387536009', description: 'Cefixime (clinical drug)' },
+            { term: 'Sefotaksim inj 1 g', code: '323853003', description: 'Cefotaxime 1 g injection (clinical drug)' },
+            { term: 'Setritin tab 10 mg', code: '320818006', description: 'Cetirizine 10 mg oral tablet (clinical drug)' },
+            { term: 'Spet 10 cc', code: '619805003', description: 'Syringe, device (physical object)' },
+            { term: 'Spet 3 cc', code: '619805003', description: 'Syringe, device (physical object)' },
+            { term: 'Spironolakton tablet 25 mg', code: '318056008', description: 'Spironolactone 25 mg oral tablet (clinical drug)' },
+            { term: 'Tas puring ledl 34 cm x 35 cm x 38 cm', code: '110265004', description: 'Blood bag, device (physical object)' },
+            { term: 'Transfusion set', code: '466245002', description: 'Blood transfusion filter (physical object)' },
+            { term: 'Male', code: '394733009', description: 'Man (person)' },
+            { term: 'Person categorized by age', code: '105590001', description: 'Person categorized by age (person)' },
+            { term: 'Nausea', code: '422587007', description: 'Nausea (finding)' },
+            { term: 'Loss of appetite', code: '79990006', description: 'Loss of appetite (finding)' },
+            { term: 'Chill', code: '43724002', description: 'Chill (finding)' },
+            { term: 'Fever', code: '386661006', description: 'Fever (finding)' },
+            { term: 'History of diabetes mellitus', code: '161445003', description: 'History of diabetes mellitus (situation)' },
+            { term: 'History of chronic lymphocytic leukemia', code: '635800011004', description: 'History of chronic lymphocytic leukemia (situation)' },
+            { term: 'Structure of left upper quadrant of abdomen', code: '38667003', description: 'Structure of left upper quadrant of abdomen (body structure)' },
+            { term: 'Asthenia', code: '13791008', description: 'Asthenia (finding)' },
+            { term: 'Patient condition improved', code: '268910001', description: 'Patient condition improved (finding)' },
+            { term: 'Glucose tolerance test', code: '113807002', description: 'Glucose tolerance test (procedure)' },
+            { term: 'Bone marrow aspiration', code: '49041003', description: 'Bone marrow aspiration procedure (procedure)' },
+            { term: 'Random blood glucose measurement', code: '271061004', description: 'Random blood glucose measurement (procedure)' },
+            { term: 'Diabetes mellitus type 2', code: '44054006', description: 'Diabetes mellitus type 2 (disorder)' },
+            { term: 'Chronic lymphoid leukemia', code: '92814006', description: 'Chronic lymphoid leukemia, disease (disorder)' },
+            { term: 'Stopcock', code: '468148004', description: 'Stopcock (physical object)' },
+            { term: 'Aspiration needle', code: '706851000', description: 'Aspiration needle (physical object)' },
+            { term: 'Insulin syringe', code: '426602009', description: 'Insulin syringe (physical object)' },
+            { term: 'Gauze roll', code: '40187005', description: 'Gauze roll, sterile (physical object)' },
+            { term: 'Syringe', code: '61968008', description: 'Syringe, device (physical object)' },
+            { term: 'Blood bag', code: '116205004', description: 'Blood bag, device (physical object)' },
+            { term: 'Transfusion set', code: '466245002', description: 'Blood transfusion filter (physical object)' },
+            { term: 'Perempuan', code: '248152002', description: 'Female (person)' },
+            { term: '75 tahun', code: '424144002', description: 'Elderly person (person)' },
+            { term: 'Benjolan di telinga', code: '300850006', description: 'Mass of ear structure (finding)' },
+            { term: 'Nyeri leher', code: '81680005', description: 'Neck pain (finding)' },
+            { term: 'Benjolan di telinga terasa tertusuk-tusuk', code: '300850006', description: 'Mass of ear structure (finding)' },
+            { term: 'Batuk', code: '49727002', description: 'Cough (finding)' },
+            { term: 'Pandangan kabur', code: '111516008', description: 'Blurring of visual image (finding)' },
+            { term: 'Pendengaran berkurang', code: '15188001', description: 'Hearing loss (disorder)' },
+            { term: 'Badan lemas', code: '13791008', description: 'Asthenia (finding)' },
+            { term: 'Mual', code: '422587007', description: 'Nausea (finding)' },
+            { term: 'Leher', code: '81680005', description: 'Neck pain (finding)' },
+            { term: 'Telinga (benjolan)', code: '300850006', description: 'Mass of ear structure (finding)' },
+            { term: 'Compos mentis', code: '271591004', description: 'Fully conscious (finding)' },
+            { term: 'EWS hijau', code: '445193007', description: 'Early warning scoring system (assessment scale)' },
+            { term: 'Risiko jatuh rendah', code: '439430008', description: 'At low risk for fall (finding)' },
+            { term: 'PPS 70%', code: '373801008', description: 'World Health Organization performance status scale (assessment scale)' },
+            { term: 'ADL dibantu keluarga', code: '304492001', description: 'Penilaian aktivitas kehidupan sehari-hari (procedure)' },
+            { term: 'Transfusi PRC', code: '71493000', description: 'Transfusion of packed red blood cells (procedure)' },
+            { term: 'Kemoterapi siklus 1', code: '399042005', description: 'Chemotherapy cycle (procedure)' },
+            { term: 'Injection or infusion of cancer chemotherapeutic substance', code: '38216008', description: 'Infusion chemotherapy for malignant neoplasm (procedure)' },
+            { term: 'Non-Hodgkin lymphoma, unspecified', code: '118601006', description: 'Non-Hodgkin’s lymphoma (disorder)' },
+            { term: 'Chemotherapy session for neoplasm', code: '22733003', description: 'Chemotherapy for non-malignant neoplasm (procedure)' },
+            { term: 'Malignant lymphoma non-Hodgkin', code: '118601006', description: 'Non-Hodgkin’s lymphoma (disorder)' },
+            { term: 'Anemia', code: '703135009', description: 'Anemia in malignant neoplastic disease (disorder)' },
+            { term: 'Malignant lymphoma, non-Hodgkins NOS', code: '1172592001', description: 'Non-Hodgkin lymphoma (morphologic abnormality)' },
+            { term: '3-way stopcock', code: '466146004', description: 'Stopcock (physical object)' },
+            { term: '3-way stopcock (Tro Venoflow)', code: '469551002', description: 'Intravenous line stopcock (physical object)' },
+            { term: 'Acetylcystein kapsul 200 mg', code: '387440002', description: 'Acetylcysteine (substance)' },
+            { term: 'Connection suction', code: '706092000', description: 'Suction system (physical object)' },
+            { term: 'Deksametason inj 5 mg', code: '372584003', description: 'Dexamethasone (substance)' },
+            { term: 'Difenhidramin inj 10 mg/mL', code: '372682005', description: 'Diphenhydramine (substance)' },
+            { term: 'Doxorubicin inj 10 mg', code: '326788003', description: 'Product containing precisely doxorubicin hydrochloride 10 milligram/1 vial (clinical drug)' },
+            { term: 'Doxorubicin inj 50 mg', code: '326789006', description: 'Product containing precisely doxorubicin hydrochloride 50 milligram/1 vial (clinical drug)' },
+            { term: 'FarbiVent solution for inhalation 2,5 mL', code: '1186607000', description: 'Product containing ipratropium bromide and salbutamol solution for inhalation (clinical drug)' },
+            { term: 'Infusion set', code: '405674009', description: 'Intravenous fluid tubing (physical object)' },
+            { term: 'Infusion set Terumo', code: '467074002', description: 'Test tube, sterile (physical object)' },
+            { term: 'IV catheter no. 22', code: '82449006', description: 'Peripheral intravenous catheter (physical object)' },
+            { term: 'IV catheter no. 24', code: '82449006', description: 'Peripheral intravenous catheter (physical object)' },
+            { term: 'Masker nebulizer dewasa', code: '334947002', description: 'Nebulizer (physical object)' },
+            { term: 'Mecobalamin kapsul 0,5 mg', code: '259512006', description: 'Mecobalamin (substance)' },
+            { term: 'NaCl Satoria infus 0,9% 500 mL', code: '782104005', description: 'Sodium chloride infusion solution (clinical drug)' },
+            { term: 'Ondansetron inj 2 mg/mL', code: '782032003', description: 'Ondansetron injection (clinical drug)' },
+            { term: 'Ondansetron tablet 4 mg', code: '322173001', description: 'Ondansetron oral tablet (clinical drug)' },
+            { term: 'Paracetamol infus 10 mg/mL', code: '1237158007', description: 'Paracetamol infusion solution (clinical drug)' },
+            { term: 'Paracetamol tablet 500 mg', code: '322236009', description: 'Paracetamol oral tablet (clinical drug)' },
+            { term: 'Prednison tablet 5 mg', code: '373994007', description: 'Prednisone oral tablet (clinical drug)' },
+            { term: 'Piggyback NS 100 mL', code: '433853007', description: 'Infusion of drug via intravenous drip (procedure)' },
+            { term: 'Ranitidin inj 25 mg/mL', code: '782087002', description: 'Ranitidine injection (clinical drug)' },
+            { term: 'Selang O₂ dewasa', code: '336623009', description: 'Oxygen nasal cannula (physical object)' },
+            { term: 'Siklofosfamid serbuk inj 200 mg', code: '1148450006', description: 'Cyclophosphamide injection 200 mg (clinical drug)' },
+            { term: 'Siklofosfamid serbuk inj 500 mg', code: '1148451005', description: 'Cyclophosphamide injection 500 mg (clinical drug)' },
+            { term: 'Spet 10 cc', code: '61968008', description: 'Syringe, device (physical object)' },
+            { term: 'Spet 3 cc', code: '61968008', description: 'Syringe, device (physical object)' },
+            { term: 'Spet 5 cc', code: '61968008', description: 'Syringe, device (physical object)' },
+            { term: 'Spet 5 cc Terumo', code: '61968008', description: 'Syringe, device (physical object)' },
+            { term: 'Steriflo humidifier disposable 350 mL', code: '1351734003', description: 'Humidifier (physical object)' },
+            { term: 'Suction catheter no. 12', code: '58253008', description: 'Suction catheter, device (physical object)' },
+            { term: 'Tramadol inj 50 mg/mL', code: '782123003', description: 'Tramadol injection (clinical drug)' },
+            { term: 'Vincristin inj 2 mg', code: '387126006', description: 'Vincristine (substance)' },
+            { term: 'Vitamin C tablet 250 mg', code: '43706004', description: 'Ascorbic acid (substance)' },
+            { term: 'Laki-laki', code: '394733009', description: 'Man (person)' },
+            { term: '62 tahun', code: '1054707002', description: 'Elderly male (person)' },
+            { term: 'Kondisi pasien membaik', code: '268910001', description: 'Patient’s condition improved (finding)' },
+            { term: 'Kemoterapi', code: '367336001', description: 'Chemotherapy (procedure)' },
+            { term: 'Injection or infusion of cancer chemotherapeutic substance', code: '230857009', description: 'Injection of chemotherapeutic substance into subcutaneous reservoir (procedure)' },
+            { term: 'Bladder, unspecified', code: '93689003', description: 'Primary malignant neoplasm of urinary bladder (disorder)' },
+            { term: 'Chemotherapy session for neoplasm', code: '38216008', description: 'Infusion chemotherapy for malignant neoplasm (procedure)' },
+            { term: 'Malignant neoplasm bladder, unspecified', code: '93689003', description: 'Primary malignant neoplasm of urinary bladder (disorder)' },
+            { term: 'Transitional cell carcinoma BLADDER', code: '255109008', description: 'Transitional cell carcinoma of urinary bladder (disorder)' },
+            { term: 'Transitional cell carcinoma NOS', code: '27990000', description: 'Transitional cell carcinoma (morphologic abnormality)' },
+            { term: '3-way stopcock', code: '466146004', description: 'Stopcock (physical object)' },
+            { term: '3-way stopcock (tro venoflow)', code: '469551002', description: 'Intravenous line stopcock (physical object)' },
+            { term: 'Corsotablet 4 mg', code: '376880006', description: 'Product containing precisely dexamethasone 4 milligram oral tablet (clinical drug)' },
+            { term: 'Deksametason inj 5 mg', code: '372584003', description: 'Dexamethasone (substance)' },
+            { term: 'Diazepam tablet 2 mg', code: '32119004', description: 'Product containing precisely diazepam 2 milligram oral tablet (clinical drug)' },
+            { term: 'Diphenhydramine inj', code: '372682005', description: 'Diphenhydramine (substance)' },
+            { term: 'Forxpan inj 30 mg', code: '387374002', description: 'Paclitaxel (substance)' },
+            { term: 'Infusion set', code: '405674009', description: 'Intravenous fluid tubing (physical object)' },
+            { term: 'Infusion set Terumo', code: '467074002', description: 'Test tube, sterile (physical object)' },
+            { term: 'IV catheter', code: '82449006', description: 'Peripheral intravenous catheter, device (physical object)' },
+            { term: 'KCl 7.46% 25 ml', code: '1204388008', description: 'Potassium chloride injection (clinical drug)' },
+            { term: 'MgSO4 40% 25 ml', code: '387202002', description: 'Magnesium sulfate (substance)' },
+            { term: 'NaCl Satoria infus 0,9% 500 ml', code: '782104005', description: 'Sodium chloride infusion solution (clinical drug)' },
+            { term: 'Omeprazole inj 40 mg', code: '768146009', description: 'Omeprazole injection (clinical drug)' },
+            { term: 'Omeprazole kapsul 20 mg', code: '317291008', description: 'Omeprazole oral capsule (clinical drug)' },
+            { term: 'Ondansetron inj 2 mg/mL (4 mg)', code: '782032003', description: 'Ondansetron injection (clinical drug)' },
+            { term: 'Ondansetron tablet 8 mg', code: '783365006', description: 'Ondansetron oral tablet (clinical drug)' },
+            { term: 'Paclitaxel inj 100 mg', code: '416803003', description: 'Product containing precisely paclitaxel 100 milligram injection (clinical drug)' },
+            { term: 'Spet 10 cc', code: '61968008', description: 'Syringe, device (physical object)' },
+            { term: 'Spet 3 cc Terumo', code: '61968008', description: 'Syringe, device (physical object)' },
+            { term: 'Sukralfat sirup 500 mg/10 ml', code: '376721009', description: 'Sucralfate oral suspension (clinical drug)' },
+            { term: 'Transparent IV dressing', code: '336253001', description: 'Needleless intravenous catheter holder (physical object)' },
+            { term: 'Wanita', code: '224526002', description: 'Woman (person)' },
+            { term: '62 tahun', code: '105438007', description: 'Elderly woman (person)' },
+            { term: 'Kondisi pasien membaik', code: '268910001', description: 'Patient’s condition improved (finding)' },
+            { term: 'Injection or infusion of cancer chemotherapeutic substance', code: '230857009', description: 'Injection of chemotherapeutic substance into subcutaneous reservoir (procedure)' },
+            { term: 'Malignant neoplasm of colon, unspecified', code: '363406005', description: 'Malignant neoplasm of colon (disorder)' },
+            { term: 'Chemotherapy session for neoplasm', code: '38216008', description: 'Infusion chemotherapy for malignant neoplasm (procedure)' },
+            { term: 'Adenocarcinoma of colon', code: '1701000119104', description: 'Primary adenocarcinoma of colon (disorder)' },
+            { term: 'Adenocarcinoma NOS', code: '1187332001', description: 'Adenocarcinoma (morphologic abnormality)' },
+            { term: 'Calcium folinate inj 10 mg/mL', code: '1156142008', description: 'Product containing precisely folinic acid (as calcium folinate) injection (clinical drug)' },
+            { term: 'Curall inj 500 mg', code: '781890004', description: 'Product containing precisely fluorouracil injection (clinical drug)' },
+            { term: 'Deksametason inj 5 mg', code: '372584003', description: 'Dexamethasone (substance)' },
+            { term: 'Glucose', code: '67079006', description: 'Glucose (substance)' },
+            { term: 'Satoria infus 500 mL', code: '333710000', description: 'Product containing immunoglobulin (product)' },
+            { term: 'Diphenhydramine inj 10 mg/mL', code: '775266005', description: 'Product containing only diphenhydramine (medicinal product)' },
+            { term: 'Hidrokortison 2.5% krim', code: '346990001', description: 'Product containing precisely hydrocortisone cutaneous cream (clinical drug)' },
+            { term: 'IV catheter', code: '82449006', description: 'Peripheral intravenous catheter, device (physical object)' },
+            { term: 'Irinotecan inj 100 mg', code: '733352009', description: 'Product containing only irinotecan (medicinal product)' },
+            { term: 'Irinotecan inj 40 mg', code: '733352009', description: 'Product containing only irinotecan (medicinal product)' },
+            { term: 'IV catheter No.22', code: '82449006', description: 'Peripheral intravenous catheter, device (physical object)' },
+            { term: 'IV catheter No.24', code: '82449006', description: 'Peripheral intravenous catheter, device (physical object)' },
+            { term: 'NaCl 0.9% 500 mL', code: '782104005', description: 'Sodium chloride infusion solution (clinical drug)' },
+            { term: 'Ondansetron inj 2 mg/mL', code: '782032003', description: 'Ondansetron injection (clinical drug)' },
+            { term: 'Ondansetron tablet 4 mg', code: '322173001', description: 'Ondansetron oral tablet (clinical drug)' },
+            { term: 'Paracetamol tablet 500 mg', code: '322236009', description: 'Paracetamol oral tablet (clinical drug)' },
+            { term: 'Ranitidine inj 25 mg/mL', code: '782037002', description: 'Ranitidine injection (clinical drug)' },
+            { term: 'Spuit', code: '61968008', description: 'Syringe, device (physical object)' },
+            { term: 'Spuit 3 cc Terumo', code: '61968008', description: 'Syringe, device (physical object)' },
+            { term: 'Vitamin B kompleks tablet', code: '103096003', description: 'Vitamin B and/or its derivative (substance)' },
+            { term: 'Vitamin C tablet 250 mg', code: '43706004', description: 'Ascorbic acid (substance)' },
+            // Tambahkan lebih banyak sesuai kebutuhan (sumber: SNOMED CT publik)
+        ];
+
+        // Fungsi untuk menyimpan data dummy ke localStorage
+        function loadSnomedData() {
+            if (!localStorage.getItem('snomedCT')) {
+                localStorage.setItem('snomedCT', JSON.stringify(snomedData));
+            }
+        }
+
+        // Fungsi untuk menyimpan resume medis ke localStorage
+        function saveResume(nama, tanggal, diagnosa, fileData, fileName) {
+            const resumes = JSON.parse(localStorage.getItem('resumes')) || [];
+            const id = Date.now(); // ID unik berdasarkan timestamp
+            resumes.push({ id, nama, tanggal, diagnosa, fileData, fileName });
+            localStorage.setItem('resumes', JSON.stringify(resumes));
+        
+        }
+
+        // Fungsi unduh file dari base64
+        function downloadFile(fileData, fileName) {
+            const link = document.createElement('a');
+            link.href = fileData;
+            link.download = fileName;
+            link.click();
+        }
+
+        // Fungsi pencarian dari data dummy (fallback utama)
+        function searchSnomedFallback(term) {
+            const data = JSON.parse(localStorage.getItem('snomedCT')) || [];
+            return data.filter(item => item.term.toLowerCase().includes(term.toLowerCase()));
+        }
+
+        // Fungsi tambah kode SNOMED CT ke localStorage (tanpa deskripsi)
+        function addSnomedCode(term, code) {
+            const data = JSON.parse(localStorage.getItem('snomedCT')) || [];
+            data.push({ term: term.toLowerCase(), code, description: '' }); // Deskripsi kosong
+            localStorage.setItem('snomedCT', JSON.stringify(data));
+        }
+
+        // Fungsi pencarian dari API SNOMED CT (jika berhasil)
+        async function searchSnomedAPI(term) {
+            const url = `https://snowstorm.ihtsdotools.org/browser/MAIN/concepts?term=${encodeURIComponent(term)}&activeFilter=true&limit=10`;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}: Akses API terbatas atau CORS`);
+                const data = await response.json();
+                return data.items || []; // Struktur respons: array dengan conceptId, fsn, dll.
+            } catch (error) {
+                console.error('Error fetching SNOMED API:', error.message);
+                return null; // Gagal, gunakan fallback
+            }
+        }
+
+        // Fungsi untuk toggle section (SPA sederhana)
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.display = 'none'; // Sembunyikan semua
+            });
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.style.display = 'block'; // Tampilkan yang dipilih
+            }
+        }
+
+        // Event listener untuk navigasi
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const sectionId = this.getAttribute('data-section');
+                showSection(sectionId);
+            });
+        });
+
+        // Event listener untuk form input resume medis
+        document.getElementById('form-resume').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nama = document.getElementById('nama-pasien').value;
+            const tanggal = document.getElementById('tanggal-lahir').value;
+            const diagnosa = document.getElementById('diagnosa').value;
+            const fileInput = document.getElementById('upload-file');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const fileData = event.target.result; // Base64
+                    const fileName = file.name;
+                    saveResume(nama, tanggal, diagnosa, fileData, fileName);
+                    document.getElementById('result-resume').innerHTML = `<p>Resume medis untuk ${nama} telah disimpan dengan file ${fileName}.</p>`;
+                };
+                reader.readAsDataURL(file); // Baca sebagai base64
+            } else {
+                saveResume(nama, tanggal, diagnosa, null, null);
+                document.getElementById('result-resume').innerHTML = `<p>Resume medis untuk ${nama} telah disimpan tanpa file.</p>`;
+            }
+        });
+
+        // Event listener untuk form pencarian resume medis
+        document.getElementById('form-cari-resume').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nama = document.getElementById('cari-nama-resume').value.trim();
+            const results = searchResume(nama);
+            const resultDiv = document.getElementById('result-cari-resume');
+            if (results.length > 0) {
+                resultDiv.innerHTML = '<h3>Hasil Pencarian:</h3>' + results.map(resume => 
+                    `<div class="resume-item">
+                        <p><strong>Nama:</strong> ${resume.nama}</p>
+                        <p><strong>Tanggal Lahir:</strong> ${resume.tanggal}</p>
+                        <p><strong>Diagnosa:</strong> ${resume.diagnosa}</p>
+                        ${resume.fileData ? `<button class="download-btn" onclick="downloadFile('${resume.fileData}', '${resume.fileName}')">Unduh File</button>` : '<p>Tidak ada file.</p>'}
+                    </div>`
+                ).join('');
+            } else {
+                resultDiv.innerHTML = '<p>Tidak ada resume medis ditemukan untuk nama tersebut.</p>';
+            }
+        });
+
+        // Event listener untuk form pencarian SNOMED CT
+        document.getElementById('form-snomed').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const term = document.getElementById('istilah-medis').value.trim();
+            const resultDiv = document.getElementById('result-snomed');
+            resultDiv.innerHTML = '<p>Mencari kode SNOMED CT...</p>';
+
+            // Coba API terlebih dahulu
+            let results = await searchSnomedAPI(term);
+            if (!results || results.length === 0) {
+                // Fallback ke data dummy
+                results = searchSnomedFallback(term);
+                resultDiv.innerHTML = '<p><em>API SNOMED CT gagal (CORS/lisensi). Menggunakan data dummy sebagai fallback.</em></p>';
+            }
+
+            if (results.length > 0) {
+                resultDiv.innerHTML += '<h3>Hasil Pencarian:</h3>' + results.map(item => 
+                    `<p><strong>Kode:</strong> ${item.conceptId || item.code} - <strong>Deskripsi:</strong> ${item.fsn || item.description}</p>`
+                ).join('');
+            } else {
+                resultDiv.innerHTML += '<p>Tidak ada kode SNOMED CT ditemukan untuk istilah tersebut. Gunakan "Input Kode" untuk menambahkan.</p>';
+            }
+        });
+
+        // Event listener untuk form tambah kode SNOMED CT
+        document.getElementById('form-add-snomed').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const term = document.getElementById('new-term').value.trim().toLowerCase();
+            const code = document.getElementById('new-code').value.trim();
+            addSnomedCode(term, code);
+            document.getElementById('result-add-snomed').innerHTML = `
+<p>
+Kode SNOMED CT baru telah ditambahkan: 
+<strong>${code}</strong> untuk istilah "${term}". 
+Anda bisa mencarinya sekarang.
+</p>
+`;
+});
+</script>
+</body>
+</html>
